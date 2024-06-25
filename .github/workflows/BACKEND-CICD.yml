@@ -82,9 +82,4 @@ jobs:
               -e MONGO_USERNAME="${{ secrets.MONGO_USERNAME }}" \
               -e REDIS_HOST="${{ secrets.REDIS_HOST }}" \
               -e REDIS_PORT="${{ secrets.REDIS_PORT }}" \
-              -e FIREBASE_PROJECT_ID="${{ secrets.FIREBASE_PROJECT_ID }}" \
-              -e FIREBASE_PRIVATE_KEY_ID="${{ secrets.FIREBASE_PRIVATE_KEY_ID }}" \
-              -e FIREBASE_PRIVATE_KEY="${{ secrets.FIREBASE_PRIVATE_KEY }}" \
-              -e FIREBASE_CLIENT_EMAIL="${{ secrets.FIREBASE_CLIENT_EMAIL }}" \
-              -e FIREBASE_CLIENT_ID="${{ secrets.FIREBASE_CLIENT_ID }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/dbz-back-container:latest
