@@ -1,4 +1,4 @@
-package com.samcomo.dbz.global.firebase;
+package com.samcomo.dbz.global.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -17,11 +17,10 @@ public class FCMConfig {
 
   @Value("${fcm.key.path}")
   private String SERVICE_ACCOUNT_JSON;
-//  private String SERVICE_ACCOUNT_JSON = "firebase/firebase-adminsdk.json";
 
   @PostConstruct
-  public void init(){
-    try{
+  public void init() {
+    try {
       ClassPathResource resource = new ClassPathResource(SERVICE_ACCOUNT_JSON);
       InputStream serviceAccount = resource.getInputStream();
 
@@ -29,10 +28,14 @@ public class FCMConfig {
           .setCredentials(GoogleCredentials.fromStream(serviceAccount))
           .build();
 
-      FirebaseApp.initializeApp(options);
-      log.info("파이어베이스 연결 성공");
-    } catch (IOException e){
-      log.error("파이어베이스 연결 실패");
+      if (FirebaseApp.getApps().isEmpty()) {
+        FirebaseApp.initializeApp(options);
+        log.info("파이어베이스 연결 성공");
+      } else {
+        log.info("FirebaseApp is already initialized.");
+      }
+    } catch (IOException e) {
+      log.error("파이어베이스 연결 실패", e);
     }
   }
 }
