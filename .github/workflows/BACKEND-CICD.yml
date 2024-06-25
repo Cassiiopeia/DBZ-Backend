@@ -64,27 +64,27 @@ jobs:
             echo $PW | sudo -S docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dbz-back-container:latest
             echo $PW | sudo -S docker stop dbz-back || true
             echo $PW | sudo -S docker rm dbz-back || true
-            echo $PW | sudo -S docker run -d -p 8085:8080 --name dbz-back \
-              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
-              -e AWS_BUCKET=${{ secrets.AWS_BUCKET }} \
-              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
-              -e FCM_PROJECT_ID=${{ secrets.FCM_PROJECT_ID }} \
-              -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
-              -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-              -e MARIA_PASSWORD=${{ secrets.MARIA_PASSWORD }} \
-              -e MARIA_URL=${{ secrets.MARIA_URL }} \
-              -e MARIA_USERNAME=${{ secrets.MARIA_USERNAME }} \
-              -e MONGO_DATABASE=${{ secrets.MONGO_DATABASE }} \
-              -e MONGO_HOST=${{ secrets.MONGO_HOST }} \
-              -e MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
-              -e MONGO_PORT=${{ secrets.MONGO_PORT }} \
-              -e MONGO_USERNAME=${{ secrets.MONGO_USERNAME }} \
-              -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
-              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
-              -e FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }} \
-              -e FIREBASE_PRIVATE_KEY_ID=${{ secrets.FIREBASE_PRIVATE_KEY_ID }} \
-              -e FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }} \
-              -e FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }} \
-              -e FIREBASE_CLIENT_ID=${{ secrets.FIREBASE_CLIENT_ID }} \
+            echo $PW | sudo -S docker run -d -p 8082:8080 --name dbz-back \
+              -e AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
+              -e AWS_BUCKET="${{ secrets.AWS_BUCKET }}" \
+              -e AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
+              -e FCM_PROJECT_ID="${{ secrets.FCM_PROJECT_ID }}" \
+              -e GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+              -e GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              -e MARIA_PASSWORD="${{ secrets.MARIA_PASSWORD }}" \
+              -e MARIA_URL="${{ secrets.MARIA_URL }}" \
+              -e MARIA_USERNAME="${{ secrets.MARIA_USERNAME }}" \
+              -e MONGO_DATABASE="${{ secrets.MONGO_DATABASE }}" \
+              -e MONGO_HOST="${{ secrets.MONGO_HOST }}" \
+              -e MONGO_PASSWORD="${{ secrets.MONGO_PASSWORD }}" \
+              -e MONGO_PORT="${{ secrets.MONGO_PORT }}" \
+              -e MONGO_USERNAME="${{ secrets.MONGO_USERNAME }}" \
+              -e REDIS_HOST="${{ secrets.REDIS_HOST }}" \
+              -e REDIS_PORT="${{ secrets.REDIS_PORT }}" \
+              -e FIREBASE_PROJECT_ID="${{ secrets.FIREBASE_PROJECT_ID }}" \
+              -e FIREBASE_PRIVATE_KEY_ID="${{ secrets.FIREBASE_PRIVATE_KEY_ID }}" \
+              -e FIREBASE_PRIVATE_KEY="${{ secrets.FIREBASE_PRIVATE_KEY }}" \
+              -e FIREBASE_CLIENT_EMAIL="${{ secrets.FIREBASE_CLIENT_EMAIL }}" \
+              -e FIREBASE_CLIENT_ID="${{ secrets.FIREBASE_CLIENT_ID }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/dbz-back-container:latest
