@@ -1,0 +1,90 @@
+name: BACKEND CI CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Write Firebase Service Account JSON
+        run: echo "${{ secrets.FIREBASE_JSON }}" > firebase-service-account.json
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Docker setup
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dbz-back-container:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dbz-back-container:cache
+          cache-to: type=inline
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2022
+          script: |
+            export PATH=$PATH:/usr/local/bin
+            export PW=${{ secrets.SERVER_PASSWORD }}
+            echo $PW | sudo -S docker pull ${{ secrets.DOCKERHUB_USERNAME }}/dbz-back-container:latest
+            echo $PW | sudo -S docker stop dbz-back || true
+            echo $PW | sudo -S docker rm dbz-back || true
+            echo $PW | sudo -S docker run -d -p 8085:8080 --name dbz-back \
+              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+              -e AWS_BUCKET=${{ secrets.AWS_BUCKET }} \
+              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
+              -e FCM_PROJECT_ID=${{ secrets.FCM_PROJECT_ID }} \
+              -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+              -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              -e MARIA_PASSWORD=${{ secrets.MARIA_PASSWORD }} \
+              -e MARIA_URL=${{ secrets.MARIA_URL }} \
+              -e MARIA_USERNAME=${{ secrets.MARIA_USERNAME }} \
+              -e MONGO_DATABASE=${{ secrets.MONGO_DATABASE }} \
+              -e MONGO_HOST=${{ secrets.MONGO_HOST }} \
+              -e MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
+              -e MONGO_PORT=${{ secrets.MONGO_PORT }} \
+              -e MONGO_USERNAME=${{ secrets.MONGO_USERNAME }} \
+              -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
+              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+              -e FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }} \
+              -e FIREBASE_PRIVATE_KEY_ID=${{ secrets.FIREBASE_PRIVATE_KEY_ID }} \
+              -e FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }} \
+              -e FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }} \
+              -e FIREBASE_CLIENT_ID=${{ secrets.FIREBASE_CLIENT_ID }} \
+              ${{ secrets.DOCKERHUB_USERNAME }}/dbz-back-container:latest

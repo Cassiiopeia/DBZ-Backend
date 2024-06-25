@@ -54,7 +54,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -191,8 +190,7 @@ public class NotificationServiceImpl implements NotificationService {
 
   @NotNull
   private Request getHttpRequest(String message) throws IOException {
-    RequestBody requestBody = RequestBody.create(message,
-        MediaType.get(APPLICATION_JSON_UTF8_VALUE));
+    RequestBody requestBody = RequestBody.create(message, MediaType.get(APPLICATION_JSON_UTF8_VALUE));
 
     return new Request.Builder()
         .url(FCM_API_URL)
