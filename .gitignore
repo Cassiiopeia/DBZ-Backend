@@ -42,5 +42,6 @@ firebase-adminsdk.json
 todo.md
 
 ### secret
-src/main/resources/application.yml
-src/main/resources/application-dev.yml
+
+### firebase
+src/main/resources/firebase/firebase-adminsdk.json
