@@ -28,6 +28,9 @@ jobs:
       - name: Write Firebase Service Account JSON
         run: echo "${{ secrets.FIREBASE_JSON }}" > ./src/main/resources/firebase/firebase-adminsdk.json
 
+      - name: Verify Firebase JSON file
+        run: cat ./src/main/resources/firebase/firebase-adminsdk.json
+
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
