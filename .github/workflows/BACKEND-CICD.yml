@@ -23,7 +23,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Write Firebase Service Account JSON
-        run: echo "${{ secrets.FIREBASE_JSON }}" > ./src/main/resources/firebase-service-account.json
+        run: echo "${{ secrets.FIREBASE_JSON }}" > ./src/main/resources/firebase/firebase-adminsdk.json
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
